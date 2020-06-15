@@ -18,12 +18,13 @@
                             lng: -71.572973
                         }]
                     },
-                    //{
-                    //    placeName: "New London Turnpike",
-                    //        lat: ,
-                    //        lng: 
-                    //    }]
-                    //},
+                    {
+                        placeName: "New London Turnpike",
+                        LatLng: [{
+                            lat: 41.646537,
+                            lng: -71.565265
+                        }]
+                    },
                 ];
         
                 window.onload = function () {
