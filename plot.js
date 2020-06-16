@@ -1,70 +1,79 @@
-                var map;
-                var InforObj = [];
-                var centerCords = {
-                    lat: 41.637631,
-                    lng: -71.587407
-                };
-                var markersOnMap = [{
-                        placeName: "Division Street",
-                        LatLng: [{
-                            lat: 41.647816,
-                            lng: -71.595931
-                        }]
-                    },
-                    {
-                        placeName: "Hopkins Hill Road",
-                        LatLng: [{
-                            lat: 41.640404,
-                            lng: -71.572973
-                        }]
-                    },
-                    {
-                        placeName: "New London Turnpike",
-                        LatLng: [{
-                            lat: 41.646537,
-                            lng: -71.565265
-                        }]
-                    },
-                ];
-        
-                window.onload = function () {
-                    initMap();
-                };
-        
-                function addMarker() {
-                    for (var i = 0; i < markersOnMap.length; i++) {
-                        var contentString = '<div id="content"><h1>' + markersOnMap[i].placeName;
-        
-                        const marker = new google.maps.Marker({
-                            position: markersOnMap[i].LatLng[0],
-                            map: map
-                        });
-        
-                        const infowindow = new google.maps.InfoWindow({
-                            content: contentString,
-                            maxWidth: 200
-                        });
-        
-                        marker.addListener('click', function () {
-                            closeOtherInfo();
-                            infowindow.open(marker.get('map'), marker);
-                            InforObj[0] = infowindow;
-                        });
-                    }
-                }
-        
-                function closeOtherInfo() {
-                    if (InforObj.length > 0) {
-                        InforObj[0].set("marker", null);
-                        InforObj[0].close();
-                        InforObj.length = 0;
-                    }
-                }
-        
-                function initMap() {
-                    map = new google.maps.Map(document.getElementById('map'), {
-                        zoom: 14,
-                        center: centerCords
-                    });
-                    addMarker();
-                }
+// plot.js
+// last updated: 15 june 2020
+// author: Elliot Vosburgh
+// API req: Google Maps
+
+var map, infoWindow;
+
+function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: -34.397, lng: 150.644},
+    zoom: 6
+  });
+  infoWindow = new google.maps.InfoWindow;
+
+  // Try HTML5 geolocation.
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+
+      infoWindow.setPosition(pos);
+      infoWindow.setContent('Location found.');
+      infoWindow.open(map);
+      map.setCenter(pos);
+    }, function() {
+      handleLocationError(true, infoWindow, map.getCenter());
+    });
+  } else {
+    // Browser doesn't support Geolocation
+    handleLocationError(false, infoWindow, map.getCenter());
+  }
+
+
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+                                'Error: The Geolocation service failed.' :
+                                'Error: Your browser doesn\'t support geolocation.');
+        infoWindow.open(map);
+    }
+
+    var iconBase = '/icons/';
+
+    var icons = {
+        litter: {
+            icon: iconBase + 'litter_maps.png'
+        },
+        wasteDump: {
+            icon: iconBase + 'wasteDump_maps.png'
+        },
+        oilDeposit: {
+            icon: iconBase + 'oilDeposit_maps.png'
+        }
+    };
+
+    var markers = [
+        {
+            position: new google.maps.LatLn(// coordinates),
+            type: // icon name
+        },{
+            position: new google.maps.LatLn(// coordinates),
+            type: // icon name
+        }
+        /*
+        * ... add markers for incident points
+        */
+    ];
+
+    // spawn markers
+    for (var i = 0; i < markers.length; i++) {
+        var spawnedMarker = new google.maps.Marker({
+            position: markers[i].position,
+            icon: icons[markers[i].type].icon,
+            map: map
+        })
+    };
+};
